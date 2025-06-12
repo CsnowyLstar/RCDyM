@@ -34,7 +34,6 @@ seed = 0
 np.random.seed(seed)
 random.seed(seed)
 
-
 ################################################################
 ###  (2) Data generation                                     ###
 ################################################################
@@ -73,8 +72,8 @@ window = 3000
 step = 1000
 index = 'max_eigenvalue' # select from ['max_eigenvalue','max_floquet','max_lyapunov']
 iscontinuous = False
-RCDI = RC_EWM(X, ts, window, step, args, iscontinuous)
-max_evals, tm = RCDI.calculate(index)
+RCDyM = RC_EWM(X, ts, window, step, args, iscontinuous)
+max_evals, tm = RCDyM.calculate(index)
 
 
 ################################################################
@@ -136,7 +135,7 @@ def draw(fi, td, ews, label, istrue):
     ax12.tick_params(axis='y', colors='red')
     ax12.set_ylabel(label, size=ls, color='red')
 
-draw(1, tm, max_evals[:,0], 'RCDI', False)
+draw(1, tm, max_evals[:,0], 'RCDyM', False)
 draw(2, tbs[0], baselines[0], indexs[0], False)
 draw(3, tbs[1], baselines[1], indexs[1], False)
 draw(4, tbs[2], baselines[2], indexs[2], False)
@@ -151,11 +150,11 @@ index_pd = pd.DataFrame(max_evals)
 jxs_pd = pd.DataFrame(jxs)
 ts_pd = pd.DataFrame(ts)
 tm_pd = pd.DataFrame(tm)
-X_pd.to_csv('results/X_'+moln+'_RCDI_'+str(sigma)+'.csv')
-index_pd.to_csv('results/index_'+moln+'_RCDI_'+str(sigma)+'.csv')
-jxs_pd.to_csv('results/jxs_'+moln+'_RCDI_'+str(sigma)+'.csv')
-ts_pd.to_csv('results/ts_'+moln+'_RCDI_'+str(sigma)+'.csv')
-tm_pd.to_csv('results/tm_'+moln+'_RCDI_'+str(sigma)+'.csv')
+X_pd.to_csv('results/X_'+moln+'_RCDyM_'+str(sigma)+'.csv')
+index_pd.to_csv('results/index_'+moln+'_RCDyM_'+str(sigma)+'.csv')
+jxs_pd.to_csv('results/jxs_'+moln+'_RCDyM_'+str(sigma)+'.csv')
+ts_pd.to_csv('results/ts_'+moln+'_RCDyM_'+str(sigma)+'.csv')
+tm_pd.to_csv('results/tm_'+moln+'_RCDyM_'+str(sigma)+'.csv')
 
 for i in range(len(tbs)):
     tb = pd.DataFrame(tbs[i])

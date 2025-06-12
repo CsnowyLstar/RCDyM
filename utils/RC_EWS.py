@@ -16,10 +16,13 @@ from scipy import signal
 ########################################################
 # Important Note:
 # To significantly reduce the computation time running the analysis including 50 replicates, all results presented in this python-file are based on one time series replicate per mathematical model. 
-# Due to process noise (as well as observation error), the RCDI results produced from analyzing one replicate look more variable and change less smoothly. 
-# However, the findings based on analyzing one replicate still reveal the same dynamical behaviors qualitatively (e.g., the trend of RCDI).
+# Due to process noise (as well as observation error), the RCDyM results produced from analyzing one replicate look more variable and change less smoothly. 
+# However, the findings based on analyzing one replicate still reveal the same dynamical behaviors qualitatively (e.g., the trend of RCDyM).
 #########################################################
-    
+
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+
 class RC_control(nn.Module):  # myModel
     def __init__(self, Win, A, leak, b, dt):
         super(RC_control, self).__init__()
@@ -143,8 +146,8 @@ class RC_EWM:
             period = selected_peaks[1]
         else:
             period = selected_peaks[0]
-        print("period=",period)
-        print("If not reasonable, please adjust parameters Tmin and threshold.")
+        #print("period=",period)
+        #print("If not reasonable, please adjust parameters Tmin and threshold.")
         return period
     
     def find_period_autocorr2(self,flo_x, Tmin=100, threshold=0.92):
@@ -317,8 +320,8 @@ class RC_EWM:
             evals_predm, evecs_predm = eig(M)
             ind = np.argmax(np.abs(evals_predm))
             val = evals_predm[ind]
-            print("period:", period*flo_dt, period)
-            print("floquet:", val)
+            #print("period:", period*flo_dt, period)
+            #print("floquet:", val)
             max_floquets[j,0] = val.real
             max_floquets[j,1] = val.imag
         return(max_floquets, tm)
@@ -517,8 +520,8 @@ class RC_EWM:
             evals_predm, evecs_predm = eig(M)
             ind = np.argmax(np.abs(evals_predm))
             val = evals_predm[ind]
-            print("period:", period*flo_dt, period)
-            print("floquet:", val)
+            #print("period:", period*flo_dt, period)
+            #print("floquet:", val)
             max_floquets[j,0] = val.real
             max_floquets[j,1] = val.imag
         return(max_floquets, tm)
@@ -573,7 +576,7 @@ class RC_EWM:
                     R_ii[:,i//norm_time] = np.log(np.diag(RR)+0j)
             ler = np.sum(R_ii, axis=1).real / (pl * dt)
             max_lyapunovs[j] = np.max(ler)
-            print("Lyapunov:", np.max(ler))
+            #print("Lyapunov:", np.max(ler))
         return(max_lyapunovs, tm)
     
     def calculate(self, index='max_eigenvalue'):

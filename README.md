@@ -25,13 +25,13 @@ pip install -r requirements.txt
 ```
 
 ## Examples
-- 'bifurcation_fold.py' serves as an example for predicting tipping point in fold bifurcation system.
+- 'bifurcation_fold.py' serves as an example for predicting tipping point in a fold bifurcation system, corresponding to the transition between equilibrium states of the system.
 ```python
-python -m bifurcation_fold.py
+python -m bifurcation_fold
 ```
-- 'floquent_logistic.py' serves as an example for predicting tipping points of periodic variations in logistic maps.
+- 'floquent_logistic.py' serves as an example for predicting tipping points of periodic variations in the logistic map, corresponding to the transformation of the system's periodicity.
 ```python
-python -m floquent_logistic.py
+python -m floquent_logistic
 ```
 
 ## Files

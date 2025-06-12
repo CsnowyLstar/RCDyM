@@ -42,6 +42,7 @@ python -m floquent_logistic
 - 'floquent_logistic.py' is experimental code for generating the logistic map data and performing critical transition prediction.
 - 'hopf_pf.py' is experimental code for generating the hopf data and performing critical transition prediction (from period to fixed point).
 - 'ks_cp.py' and 'ks_pc.py' represent the experiment codes for the KS PDE system, transitioning from chaos to period and from period to chaos, respectively. Before execution, generate the experimental data using "dataset/gen_ks_cp.ipynb".
+- 'lorenz_fc.py' and 'lorenz_cf.py' represent the experiment codes for the Lorenz63 system, transitioning from fixed point to chaos and from chaos to fixed point, respectively.
 
 ## File folders
 - 'utils' folder contains the code for RCDyM method.

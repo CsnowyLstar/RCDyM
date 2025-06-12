@@ -41,7 +41,7 @@ python -m floquent_logistic
 - 'bifurcation_pitchfork.py' is experimental code for generating pitchfork bifurcation data and performing critical transition prediction.
 - 'floquent_logistic.py' is experimental code for generating the logistic map data and performing critical transition prediction.
 - 'hopf_pf.py' is experimental code for generating the hopf data and performing critical transition prediction (from period to fixed point).
-- 'ks_cp.py' and 'ks_pc.py' represent the critical prediction experiment codes for the KS PDE system, transitioning from chaos to periodicity and from periodicity to chaos, respectively. Before execution, generate the experimental data using "dataset/gen_ks_cp.ipynb".
+- 'ks_cp.py' and 'ks_pc.py' represent the experiment codes for the KS PDE system, transitioning from chaos to period and from period to chaos, respectively. Before execution, generate the experimental data using "dataset/gen_ks_cp.ipynb".
 
 ## File folders
 - 'utils' folder contains the code for RCDyM method.

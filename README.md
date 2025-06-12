@@ -39,6 +39,7 @@ python -m floquent_logistic
 - 'bifurcation_hopf.py' is experimental code for generating Hopf bifurcation data and performing critical transition prediction.
 - 'bifurcation_PeriodD.py' is experimental code for generating period-doubling bifurcation data and performing critical transition prediction.
 - 'bifurcation_pitchfork.py' is experimental code for generating pitchfork bifurcation data and performing critical transition prediction.
+- 'floquent_logistic.py' is experimental code for generating the logistic map and performing critical transition prediction.
 
 ## File folders
 - 'utils' folder contains the code for RCDyM method.

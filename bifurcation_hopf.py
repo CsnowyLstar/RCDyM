@@ -75,8 +75,8 @@ window = 2000
 step = 300
 index = 'max_eigenvalue' # select from ['max_eigenvalue','max_floquet','max_lyapunov']
 continuous = True
-RCDI = RC_EWM(X, ts, window, step, args, continuous)
-max_evals, tm = RCDI.calculate(index)
+RCDyM = RC_EWM(X, ts, window, step, args, continuous)
+max_evals, tm = RCDyM.calculate(index)
 
 # Calculate ground truth
 def true_jac(s,p):
@@ -118,7 +118,7 @@ ax12.plot(tm_fine,max_evals_fitted,'r-',linewidth=8,alpha=0.6)
 plt.ylim(top=0.2)
 ax12.tick_params(labelsize=ls)
 ax12.tick_params(axis='y', colors='red')
-ax12.set_ylabel("RCDI (GT)",size=ls,color='red')
+ax12.set_ylabel("RCDyM (GT)",size=ls,color='red')
 
 ax3 = fig.add_subplot(2,1,2)
 ax3.plot(ts,F_bifurcation,'k-',linewidth=2.0)
@@ -126,7 +126,7 @@ ax3.tick_params(labelsize=ls)
 ax3.set_xlabel(r"$t$",size=ls)
 ax3.set_ylabel(r"$p$",size=ls)
 
-plt.savefig("results/bifurcation_hopf.pdf")
+plt.savefig("results/bifurcation_hopf.png")
 
 # save
 X_pd = pd.DataFrame(X)

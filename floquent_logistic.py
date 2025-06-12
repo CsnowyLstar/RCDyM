@@ -73,9 +73,9 @@ isdetrend = False
 
 num = 1; inds_MFM = []
 for i in range(num):
-    RCDI = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
+    RCDyM = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
     
-    MFM, tm = RCDI.get_max_floquet_dis(Tmin=1, threshold=0.85)
+    MFM, tm = RCDyM.get_max_floquet_dis(Tmin=1, threshold=0.85)
     inds_MFM.append(MFM)
 
 ################################################################
@@ -100,13 +100,14 @@ for i in range(len(inds_MFM)):
 ax12.set_ylim(0.0,1.2)
 ax12.tick_params(labelsize=ls)
 ax12.tick_params(axis='y', colors='red')
-ax12.set_ylabel("RCDI",size=ls,color='red')
+ax12.set_ylabel("RCDyM",size=ls,color='red')
 ax12.legend(prop=font1)
 
 ax2 = fig.add_subplot(2,1,2)
 ax2.plot(ts/dt, F_bifurcation)
 ax2.plot(6400,3.6,'r^',markersize=15)
 ax2.plot(42000,3.6,'r^',markersize=15)
+plt.savefig("results/logistic.png")
 
 # save
 X_pd = pd.DataFrame(X)

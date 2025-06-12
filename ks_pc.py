@@ -121,13 +121,13 @@ step = 400
 index = 'max_floquet' # select from ['max_eigenvalue','max_floquet','max_lyapunov']
 
 iscontinuous = False
-RCDI = RC_EWM(X, ts, window, step, args, iscontinuous)
-max_floquets, tm = RCDI.calculate(index)
+RCDyM = RC_EWM(X, ts, window, step, args, iscontinuous)
+max_floquets, tm = RCDyM.calculate(index)
 
 
-rcdi = np.ones(max_floquets.shape[0])
-for i in range(len(rcdi)):
-    rcdi[i] = min(np.abs(max_floquets[i,0]), 1)
+rcdym = np.ones(max_floquets.shape[0])
+for i in range(len(rcdym)):
+    rcdym[i] = min(np.abs(max_floquets[i,0]), 1)
 
 ################################################################
 ###  (4) Draw                                                ###
@@ -143,12 +143,12 @@ ax1.tick_params(axis='y', colors='blue')
 ax1.set_ylabel(r"$s$",size=ls,color='blue')
 
 ax12 = ax1.twinx()
-ax12.plot(tm/dt,rcdi,'rx', markersize=20)
+ax12.plot(tm/dt,rcdym,'rx', markersize=20)
 plt.ylim(-0.0,1.1)
 #plt.ylim(-0.1,0.03)
 ax12.tick_params(labelsize=ls)
 ax12.tick_params(axis='y', colors='red')
-ax12.set_ylabel("RCDI",size=ls,color='red')
+ax12.set_ylabel("RCDyM",size=ls,color='red')
 
 ax2 = fig.add_subplot(2,1,2)
 ax2.plot(true[8,:],'b-',linewidth=2.0)
@@ -163,4 +163,4 @@ ax22.tick_params(labelsize=ls)
 ax22.set_xlabel(r"$t$",size=ls)
 ax22.set_ylabel(r"$p$",size=ls)
 
-#plt.savefig("results/KSV3.pdf")
+plt.savefig("results/KS_pc.png")

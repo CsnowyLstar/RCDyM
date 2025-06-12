@@ -89,10 +89,9 @@ isdetrend = True
 index = 'max_eigenvalue' # select from ['max_eigenvalue','max_floquet','max_lyapunov']
 num = 1; inds_DEJ = []
 for i in range(num):
-    RCDI = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
-    max_evals, tm = RCDI.calculate(index)
+    RCDyM = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
+    max_evals, tm = RCDyM.calculate(index)
     inds_DEJ.append(max_evals)
-    
     
     
 ################################################################
@@ -124,9 +123,10 @@ ax12.plot([tm[0]/dt,tm[ed]/dt],[poly_func(tm[0]),poly_func(tm[ed])],'r-',linewid
 
 ax12.tick_params(labelsize=ls)
 ax12.tick_params(axis='y', colors='red')
-ax12.set_ylabel("RCDI",size=ls,color='red')
+ax12.set_ylabel("RCDyM",size=ls,color='red')
 ax12.legend(prop=font1)
 ax12.set_ylim(-0.75,0.1)
+plt.savefig("results/lorenz96_fc.png")
 
 sf = 5
 js = np.linspace(window+args.warm_up,ts[-1]/dt,sf) 

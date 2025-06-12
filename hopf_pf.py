@@ -76,8 +76,8 @@ index = 'max_floquet' # select from ['max_eigenvalue','max_floquet','max_lyapuno
 num = 1 
 inds_rcdi = []
 for i in range(num):
-    RCDI = RC_EWM(X, ts, window, step, args, iscontinuous)
-    ews, tm = RCDI.calculate(index)
+    RCDyM = RC_EWM(X, ts, window, step, args, iscontinuous)
+    ews, tm = RCDyM.calculate(index)
     inds_rcdi.append(ews)
 
 ################################################################
@@ -100,8 +100,9 @@ for i in range(len(inds_rcdi)):
     #ax12.plot(tm/dt,np.sqrt(max_evals[:,0]),'gx',markersize=ms,label='|MFM|')
 ax12.tick_params(labelsize=ls)
 ax12.tick_params(axis='y', colors='red')
-ax12.set_ylabel("RCDI",size=ls,color='red')
+ax12.set_ylabel("RCDyM",size=ls,color='red')
 ax12.legend(prop=font1)
+plt.savefig("results/hopf_pf.png")
 
 sf = 5
 js = np.linspace(window+args.warm_up,ts[-1]/dt,sf) 

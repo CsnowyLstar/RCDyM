@@ -45,10 +45,10 @@ python -m floquent_logistic
 - 'lorenz_fc.py' and 'lorenz_cf.py' represent the experiment codes for the Lorenz63 system, transitioning from fixed point to chaos and from chaos to fixed point, respectively.
 
 ## File folders
-- 'utils' folder contains the code for RCDyM method.
-- 'models' folder: used to store model files
-- 'dataset' folder: used to store dataset files
-- 'real_data' folder: used to store real data files
-- 'results' folder: used to store results files
-- 'RD_experiments' folder: used to execute experimental code for real-world data
-- 'Robustness_analysis' folder: used to execute experimental code for robustness analysis
+- 'utils' folder contains the core implementation code files for both RCDyM and the baseline methods.
+- 'models' folder: used to store model files.
+- 'dataset' folder: used to store dataset files.
+- 'real_data' folder: used to store real data files.
+- 'results' folder: used to store results files.
+- 'RD_experiments' folder: used to execute experimental code for real-world data.
+- 'Robustness_analysis' folder: used to execute experimental code for robustness analysis.

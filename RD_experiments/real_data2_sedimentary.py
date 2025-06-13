@@ -60,8 +60,8 @@ DEJ_diss = []; tm_diss = []
 for ni in range(num):
     args.n = ns[-ni]
     iscontinuous = False
-    RCDI_dis = RC_EWM(X, ts, window, step, args, iscontinuous)
-    DEJ_dis, tm_dis = RCDI_dis.calculate(index)
+    RCDyM_dis = RC_EWM(X, ts, window, step, args, iscontinuous)
+    DEJ_dis, tm_dis = RCDyM_dis.calculate(index)
     DEJ_diss.append(DEJ_dis); tm_diss.append(tm_dis)
 
 ################################################################
@@ -95,7 +95,7 @@ poly_func = np.poly1d(coefficients)
 ax3.plot([tm_dis[0],tm_dis[i]],[poly_func(tm_dis[0]),poly_func(tm_dis[i])],'r-',linewidth=8,alpha=0.6)
 ax3.tick_params(labelsize=ls)
 ax3.tick_params(axis='y', colors='m')
-ax3.set_ylabel("RCDI",size=ls,color='m')
+ax3.set_ylabel("RCDyM",size=ls,color='m')
 ax3.set_xlim(ts[0],ts[-1])
 ax3.set_xlabel('Time',size=ls)
 
@@ -105,9 +105,9 @@ X_pd = pd.DataFrame(X)
 index_pd = pd.DataFrame(np.sqrt(DEJ_dis[:,0]**2 + DEJ_dis[:,1]**2))
 ts_pd = pd.DataFrame(ts)
 tm_pd = pd.DataFrame(tm_dis)
-X_pd.to_csv('results/X_'+moln+'_RCDI_.csv')
-index_pd.to_csv('results/index_'+moln+'_RCDI_.csv')
-ts_pd.to_csv('results/ts_'+moln+'_RCDI_.csv')
-tm_pd.to_csv('results/tm_'+moln+'_RCDI_.csv')
+X_pd.to_csv('results/X_'+moln+'_RCDyM_.csv')
+index_pd.to_csv('results/index_'+moln+'_RCDyM_.csv')
+ts_pd.to_csv('results/ts_'+moln+'_RCDyM_.csv')
+tm_pd.to_csv('results/tm_'+moln+'_RCDyM_.csv')
 
-plt.savefig("results/r2.pdf")
+plt.savefig("results/r2.png")

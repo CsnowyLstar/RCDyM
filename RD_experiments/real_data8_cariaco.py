@@ -58,21 +58,13 @@ index = 'max_eigenvalue' # select from ['max_eigenvalue','max_floquet','max_lyap
 num = 1
 ns = np.arange(num)*3 + 60
 DEJ_cons = []; tm_cons = [] 
-DEJ_diss = []; tm_diss = []
 for ni in range(num):
     args.n = ns[ni]
     iscontinuous = True
     isdetrend = False
-    RCDI_con = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
-    DEJ_con, tm_con = RCDI_con.calculate(index)
+    RCDyM_con = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
+    DEJ_con, tm_con = RCDyM_con.calculate(index)
     DEJ_cons.append(DEJ_con); tm_cons.append(tm_con)
-    
-    args.n = ns[-ni]
-    iscontinuous = False
-    isdetrend = False
-    RCDI_dis = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
-    DEJ_dis, tm_dis = RCDI_dis.calculate(index)
-    DEJ_diss.append(DEJ_dis); tm_diss.append(tm_dis)
 
 
 ################################################################
@@ -104,36 +96,17 @@ poly_func = np.poly1d(coefficients)
 ax2.plot([tm_con[0],tm_con[i]],[poly_func(tm_con[0]),poly_func(tm_con[i])],'r-',linewidth=5)
 ax2.tick_params(labelsize=ls)
 ax2.tick_params(axis='y', colors='red')
-ax2.set_ylabel("RCDI_con",size=ls,color='red')
+ax2.set_ylabel("RCDyM_con",size=ls,color='red')
 ax2.set_xticks([])
 ax2.set_xlim(ts[0],ts[-1])
-
-ax3 = fig.add_subplot(3,1,3)
-ind = 0
-for ni in range(num):
-    tm_dis = tm_diss[ni]; DEJ_dis = DEJ_diss[ni]
-    i = next((i for i in range(len(tm_dis)) if tm_dis[i] > tp), len(tm_con)-1)
-    ax3.plot(tm_dis[:i],DEJ_dis[:i,0],'m*',markersize=ms)
-    if ind == 0:
-        xs = tm_dis[:i]; ys=DEJ_dis[:i,0]; ind = 1
-    else:
-        xs = np.concatenate((xs,tm_dis[:i]),axis=0)
-        ys = np.concatenate((ys,DEJ_dis[:i,0]),axis=0)
-coefficients = np.polyfit(xs, ys, 1)
-poly_func = np.poly1d(coefficients)
-ax3.plot([tm_dis[0],tm_dis[i]],[poly_func(tm_dis[0]),poly_func(tm_dis[i])],'m-',linewidth=5)
-ax3.tick_params(labelsize=ls)
-ax3.tick_params(axis='y', colors='m')
-ax3.set_ylabel("RCDI_dis",size=ls,color='m')
-ax3.set_xlim(ts[0],ts[-1])
-ax3.set_xlabel('Time',size=ls)
+plt.savefig("results/r8.png")
 
 moln = 'real_data8'
 X_pd = pd.DataFrame(X)
-index_pd = pd.DataFrame(np.sqrt(DEJ_dis[:,0]**2 + DEJ_dis[:,1]**2))
+index_pd = pd.DataFrame(np.sqrt(DEJ_con[:,0]**2 + DEJ_con[:,1]**2))
 ts_pd = pd.DataFrame(ts)
-tm_pd = pd.DataFrame(tm_dis)
-X_pd.to_csv('results/X_'+moln+'_RCDI_.csv')
-index_pd.to_csv('results/index_'+moln+'_RCDI_.csv')
-ts_pd.to_csv('results/ts_'+moln+'_RCDI_.csv')
-tm_pd.to_csv('results/tm_'+moln+'_RCDI_.csv')
+tm_pd = pd.DataFrame(tm_con)
+X_pd.to_csv('results/X_'+moln+'_RCDyM_.csv')
+index_pd.to_csv('results/index_'+moln+'_RCDyM_.csv')
+ts_pd.to_csv('results/ts_'+moln+'_RCDyM_.csv')
+tm_pd.to_csv('results/tm_'+moln+'_RCDyM_.csv')

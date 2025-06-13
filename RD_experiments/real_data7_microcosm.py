@@ -71,12 +71,11 @@ tp = 25
 ###  (3) Calculate the RC EWS                                ###
 ################################################################
 window = 200
-step = 20
+step = 30
 index = 'max_eigenvalue' # select from ['max_eigenvalue','max_floquet','max_lyapunov']
 
 num = 1
-ns = [90,100,110]
-DEJ_cons = []; tm_cons = [] 
+ns = [100]
 DEJ_diss = []; tm_diss = []
 for ni in range(num):
     args.n = ns[ni]
@@ -91,28 +90,18 @@ for ni in range(num):
             Xseg = X[trp[trpi-1][1]:trp[trpi][0],:]
             tseg = ts[trp[trpi-1][1]:trp[trpi][0]]
             
-        iscontinuous = True
-        isdetrend = False
-        #RCDI_con = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
-        RCDI_con = RC_EWM(Xseg, tseg, window, step, args, iscontinuous, isdetrend)
-        DEJ_coni, tm_coni = RCDI_con.calculate(index)
             
         iscontinuous = False
         isdetrend = False
-        #RCDI_dis = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
-        RCDI_dis = RC_EWM(Xseg, tseg, window, step, args, iscontinuous, isdetrend)
-        DEJ_disi, tm_disi = RCDI_dis.calculate(index)
+        RCDyM_dis = RC_EWM(Xseg, tseg, window, step, args, iscontinuous, isdetrend)
+        DEJ_disi, tm_disi = RCDyM_dis.calculate(index)
         
         if trpi == 0:
-            DEJ_con = DEJ_coni; tm_con = tm_coni 
             DEJ_dis = DEJ_disi; tm_dis = tm_disi 
         else:
-            DEJ_con = np.concatenate((DEJ_con,DEJ_coni),axis=0)
             DEJ_dis = np.concatenate((DEJ_dis,DEJ_disi),axis=0)
-            tm_con = np.concatenate((tm_con,tm_coni),axis=0)
             tm_dis = np.concatenate((tm_dis,tm_disi),axis=0)
     
-    DEJ_cons.append(DEJ_con); tm_cons.append(tm_con)
     DEJ_diss.append(DEJ_dis); tm_diss.append(tm_dis)
 
 ################################################################
@@ -128,32 +117,11 @@ ax1.set_ylabel(r"$s$",size=ls,color='b')
 ax1.set_xticks([])
 ax1.set_xlim(ts[0],ts[-1])
 
-ax2 = fig.add_subplot(3,1,2)
-ind = 0
-for ni in range(num):
-    tm_con = tm_cons[ni]; DEJ_con = DEJ_cons[ni]
-    i = next((i for i in range(len(tm_con)) if tm_con[i] > tp), len(tm_con)-1)
-    ax2.plot(tm_con[:i],DEJ_con[:i,0],'r*',markersize=ms)
-    if ind == 0:
-        xs = tm_con[:i]; ys=DEJ_con[:i,0]; ind = 1
-    else:
-        xs = np.concatenate((xs,tm_con[:i]),axis=0)
-        ys = np.concatenate((ys,DEJ_con[:i,0]),axis=0)
-coefficients = np.polyfit(xs, ys, 1)
-poly_func = np.poly1d(coefficients)
-ax2.plot([tm_con[0],tm_con[i]],[poly_func(tm_con[0]),poly_func(tm_con[i])],'r-',linewidth=5)
-ax2.tick_params(labelsize=ls)
-ax2.tick_params(axis='y', colors='red')
-ax2.set_ylabel("RCDI_con",size=ls,color='red')
-ax2.set_xticks([])
-ax2.set_xlim(ts[0],ts[-1])
-#ax2.set_ylim(bottom=-80,top=None)
-
-ax3 = fig.add_subplot(3,1,3)
+ax3 = fig.add_subplot(3,1,2)
 ind = 0
 for ni in range(num):
     tm_dis = tm_diss[ni]; DEJ_dis = DEJ_diss[ni]
-    i = next((i for i in range(len(tm_dis)) if tm_dis[i] > tp), len(tm_con)-1)
+    i = next((i for i in range(len(tm_dis)) if tm_dis[i] > tp), len(tm_dis)-1)
     ax3.plot(tm_dis[:i],DEJ_dis[:i,0],'m*',markersize=ms)
     if ind == 0:
         xs = tm_dis[:i]; ys=DEJ_dis[:i,0]; ind = 1
@@ -165,16 +133,19 @@ poly_func = np.poly1d(coefficients)
 ax3.plot([tm_dis[0],tm_dis[i]],[poly_func(tm_dis[0]),poly_func(tm_dis[i])],'m-',linewidth=5)
 ax3.tick_params(labelsize=ls)
 ax3.tick_params(axis='y', colors='m')
-ax3.set_ylabel("RCDI_dis",size=ls,color='m')
+ax3.set_ylabel("RCDyM_dis",size=ls,color='m')
 ax3.set_xlim(ts[0],ts[-1])
 ax3.set_xlabel('Time',size=ls)
+plt.savefig("results/r7.png")
 
 moln = 'real_data7'
 X_pd = pd.DataFrame(X)
 index_pd = pd.DataFrame(np.sqrt(DEJ_dis[:,0]**2 + DEJ_dis[:,1]**2))
 ts_pd = pd.DataFrame(ts)
 tm_pd = pd.DataFrame(tm_dis)
-X_pd.to_csv('results/X_'+moln+'_RCDI_.csv')
-index_pd.to_csv('results/index_'+moln+'_RCDI_.csv')
-ts_pd.to_csv('results/ts_'+moln+'_RCDI_.csv')
-tm_pd.to_csv('results/tm_'+moln+'_RCDI_.csv')
+X_pd.to_csv('results/X_'+moln+'_RCDyM_.csv')
+index_pd.to_csv('results/index_'+moln+'_RCDyM_.csv')
+ts_pd.to_csv('results/ts_'+moln+'_RCDyM_.csv')
+tm_pd.to_csv('results/tm_'+moln+'_RCDyM_.csv')
+
+

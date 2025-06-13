@@ -39,6 +39,8 @@ random.seed(seed)
 ################################################################
 ###  (2) Read data                                           ###
 ################################################################
+'''
+## raw data
 dataset_salinity = xr.open_dataset("real_data/Salinity/salinity_dmean.nc")
 lat = dataset_salinity.variables['lat'][:]
 lon = dataset_salinity.variables['lon'][:]
@@ -59,6 +61,7 @@ ischecknan = True
 #X = sst.copy()
 #X = np.concatenate((snn2, sn, ss), axis=-1)
 X = np.concatenate((snn2, sst[sst.shape[0]-snn2.shape[0]:]), axis=-1)
+
 if isyear:
     num = X.shape[0]//12 * 12
     X = np.mean(X[:num].reshape(12,-1,X.shape[-1]),axis=0)
@@ -77,6 +80,11 @@ X_pd = pd.DataFrame(X)
 ts_pd = pd.DataFrame(ts)
 X_pd.to_csv('real_data/AMOC/amocX.csv')
 ts_pd.to_csv('real_data/AMOC/amocTS.csv')
+'''
+
+## transformed data
+X = pd.read_csv('real_data/AMOC/amocX.csv').values[:,1:]
+ts = pd.read_csv('real_data/AMOC/amocTS.csv').values[:,1:]
 
 ################################################################
 ###  (3) Calculate the RC EWS                                ###
@@ -86,8 +94,8 @@ step = 25
 index = 'max_eigenvalue' # select from ['max_eigenvalue','max_floquet','max_lyapunov']
 
 iscontinuous = False
-RCDI = RC_EWM(X, ts, window, step, args, iscontinuous)
-DEJ, tm = RCDI.calculate(index)
+RCDyM = RC_EWM(X, ts, window, step, args, iscontinuous)
+DEJ, tm = RCDyM.calculate(index)
 tm_ori = tm.copy()
 
 DEJ_modulus = np.sqrt(DEJ[:,0]**2+DEJ[:,1]**2)
@@ -105,9 +113,9 @@ tm = tm_ori[indices]
 degree = 1
 num_month = 2072
 fig = plt.figure(figsize=(24,16))
-ls = 40; ms = 15
-plt.rc('font', size=ls, family='Times New Roman')  # 设置全局字体
-
+ls = 35; ms = 15
+#plt.rc('font', size=ls, family='Times New Roman') 
+plt.rc('font', size=ls) 
 ax1 = fig.add_subplot(2,1,1)
 ax1.plot(ts,X[:,0], 'orange', linewidth=3)
 ax1.tick_params(labelsize=ls)
@@ -124,15 +132,15 @@ ax12.set_xlim(0,num_month)
 ax12.set_xlabel('Year')
 
 ax2 = fig.add_subplot(2,1,2)
-ax2.plot(tm, DEJ_modulus, 'm*', markersize=ms, label="RCDI indicator (DEJ)")
+ax2.plot(tm, DEJ_modulus, 'm*', markersize=ms, label="RCDyM (DEJ indicator)")
 coefficients = np.polyfit(tm, DEJ_modulus, degree)
 polynomial = np.poly1d(coefficients)
 tm_fine = np.linspace(min(tm), max(tm), 500)
 max_evals_fitted = polynomial(tm_fine)
 tm_fine2 = np.linspace(max(tm), (0.0-coefficients[1])/coefficients[0], 100); print("t1",(0.0-coefficients[1])/coefficients[0]/12+1900)
 max_evals_fitted2 = polynomial(tm_fine2)
-ax2.plot(tm_fine,max_evals_fitted,'r-',linewidth=8,alpha=0.6,label="Regression line 1")
-ax2.plot(tm_fine2,max_evals_fitted2,'r--',linewidth=4,alpha=1.0,label="Possible future trend 1")
+ax2.plot(tm_fine,max_evals_fitted,'r-',linewidth=8,alpha=0.6,label="Regression line (optimistic)")
+ax2.plot(tm_fine2,max_evals_fitted2,'r--',linewidth=4,alpha=1.0,label="Predicted trend (optimistic)")
 
 sta = 18
 coefficients = np.polyfit(tm[sta:], DEJ_modulus[sta:], degree)
@@ -141,14 +149,14 @@ tm_fine = np.linspace(min(tm[sta:]), max(tm[sta:]), 500)
 max_evals_fitted = polynomial(tm_fine)
 tm_fine2 = np.linspace(max(tm[sta:]), (0.0-coefficients[1])/coefficients[0], 100); print("t2",(0.0-coefficients[1])/coefficients[0]/12+1900)
 max_evals_fitted2 = polynomial(tm_fine2)
-ax2.plot(tm_fine,max_evals_fitted,'b-',linewidth=8,alpha=0.6,label="Regression line 2")
-ax2.plot(tm_fine2,max_evals_fitted2,'b--',linewidth=4,alpha=1.0,label="Possible future trend 2")
+ax2.plot(tm_fine,max_evals_fitted,'b-',linewidth=8,alpha=0.6,label="Regression line (pessimistic)")
+ax2.plot(tm_fine2,max_evals_fitted2,'b--',linewidth=4,alpha=1.0,label="Predicted trend (pessimistic)")
 
 ax2.plot([0,2300],[0,0], 'k--', linewidth=3)
 #ax2.plot([0,2300],[0,0], 'k--')
 ax2.tick_params(labelsize=ls)
 ax2.tick_params(axis='y')
-ax2.set_ylabel("RCDI",size=ls)
+ax2.set_ylabel("RCDyM",size=ls)
 ax2.set_xticks([])
 ax2.set_xlim(ts[0],ts[-1])
 
@@ -158,7 +166,7 @@ ax2.set_xlim(0,num_month)
 ax2.set_xlabel('Time (year)')
 
 plt.legend()
-plt.savefig("results/AMOC.pdf")
+plt.savefig("results/AMOC.png")
 
 
 

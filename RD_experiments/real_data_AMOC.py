@@ -39,7 +39,6 @@ random.seed(seed)
 ################################################################
 ###  (2) Read data                                           ###
 ################################################################
-'''
 ## raw data
 dataset_salinity = xr.open_dataset("real_data/Salinity/salinity_dmean.nc")
 lat = dataset_salinity.variables['lat'][:]
@@ -80,11 +79,12 @@ X_pd = pd.DataFrame(X)
 ts_pd = pd.DataFrame(ts)
 X_pd.to_csv('real_data/AMOC/amocX.csv')
 ts_pd.to_csv('real_data/AMOC/amocTS.csv')
-'''
 
+'''
 ## transformed data
 X = pd.read_csv('real_data/AMOC/amocX.csv').values[:,1:]
 ts = pd.read_csv('real_data/AMOC/amocTS.csv').values[:,1:]
+'''
 
 ################################################################
 ###  (3) Calculate the RC EWS                                ###

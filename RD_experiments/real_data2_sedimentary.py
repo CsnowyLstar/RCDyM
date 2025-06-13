@@ -40,7 +40,7 @@ random.seed(seed)
 ################################################################
 ###  (2) Read data                                           ###
 ################################################################
-data = pd.read_csv('real_data/anoxia/data_anoxia.csv').values
+data = pd.read_csv('real_data/data_anoxia.csv').values
 ts = data[1000:7000,1]
 ts = ts - ts[0]
 X = data[1000:7000,4][:,None]

@@ -143,4 +143,5 @@ for i in range(sf):
     ax.set_xlabel(r"$s_1$",size=ls)
     if i==0:
         ax.set_ylabel(r"$s_2$",size=ls)
+
 plt.savefig("L96.pdf")

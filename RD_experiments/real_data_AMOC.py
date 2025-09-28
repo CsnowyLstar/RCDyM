@@ -1,3 +1,4 @@
+
 import numpy as np
 import random as random
 import torch
@@ -40,6 +41,7 @@ random.seed(seed)
 ###  (2) Read data                                           ###
 ################################################################
 ## raw data
+'''
 dataset_salinity = xr.open_dataset("real_data/Salinity/salinity_dmean.nc")
 lat = dataset_salinity.variables['lat'][:]
 lon = dataset_salinity.variables['lon'][:]
@@ -84,7 +86,7 @@ ts_pd.to_csv('real_data/AMOC/amocTS.csv')
 ## transformed data
 X = pd.read_csv('real_data/AMOC/amocX.csv').values[:,1:]
 ts = pd.read_csv('real_data/AMOC/amocTS.csv').values[:,1:]
-'''
+
 
 ################################################################
 ###  (3) Calculate the RC EWS                                ###
@@ -107,10 +109,41 @@ print(DEJ_modulus_ori.shape, indices.shape)
 DEJ_modulus = DEJ_modulus_ori[indices]
 tm = tm_ori[indices] 
 
+
+
+
 ################################################################
-###  (4) Draw and save                                       ###
+###  (4) Refined low-order polynomial                                                                      ###
 ################################################################
-degree = 1
+from scipy.optimize import minimize
+
+def objective(coeffs, x, y, degree, alpha):
+    design_matrix = np.vander(x, degree+1, increasing=True)
+    y_pred = np.dot(design_matrix, coeffs)
+    data_fit = np.sum((y_pred - np.array(y)) ** 2)
+    regularization = alpha * np.sum(coeffs[1:]**2)
+    return data_fit + regularization
+
+def monotonic_polyfit_nonnegative(x_data, y_data, degree, alpha=0.1):
+    coeffs_init = np.polyfit(x_data, y_data, degree)[::-1]
+    #coeffs_init = np.ones(degree + 1) * (1e-5)
+    
+    bounds = [(None, None)]
+    bounds.extend([(0, None) for _ in range(degree)])
+
+    result = minimize(objective, coeffs_init, args=(x_data, y_data, degree, alpha), 
+                      bounds=bounds, method='SLSQP', options={'maxiter': 1000, 'ftol': 1e-8})
+    if not result.success:
+        print("warning:", result.message)
+        return coeffs_init
+
+    return result.x
+    
+
+################################################################
+###  (5) Draw and save                                       ###
+################################################################
+degree = 1; alpha = 0.00
 num_month = 2072
 fig = plt.figure(figsize=(24,16))
 ls = 35; ms = 15
@@ -133,21 +166,21 @@ ax12.set_xlabel('Year')
 
 ax2 = fig.add_subplot(2,1,2)
 ax2.plot(tm, DEJ_modulus, 'm*', markersize=ms, label="RCDyM (DEJ indicator)")
-coefficients = np.polyfit(tm, DEJ_modulus, degree)
-polynomial = np.poly1d(coefficients)
+coefficients = monotonic_polyfit_nonnegative(tm, DEJ_modulus, degree, alpha)
+polynomial = np.poly1d(coefficients[::-1])
 tm_fine = np.linspace(min(tm), max(tm), 500)
 max_evals_fitted = polynomial(tm_fine)
-tm_fine2 = np.linspace(max(tm), (0.0-coefficients[1])/coefficients[0], 100); print("t1",(0.0-coefficients[1])/coefficients[0]/12+1900)
+tm_fine2 = np.linspace(max(tm), (0.0-coefficients[0])/coefficients[1], 100); print("t1",(0.0-coefficients[0])/coefficients[1]/12+1900)
 max_evals_fitted2 = polynomial(tm_fine2)
 ax2.plot(tm_fine,max_evals_fitted,'r-',linewidth=8,alpha=0.6,label="Regression line (optimistic)")
 ax2.plot(tm_fine2,max_evals_fitted2,'r--',linewidth=4,alpha=1.0,label="Predicted trend (optimistic)")
 
 sta = 18
-coefficients = np.polyfit(tm[sta:], DEJ_modulus[sta:], degree)
-polynomial = np.poly1d(coefficients)
+coefficients = monotonic_polyfit_nonnegative(tm[sta:], DEJ_modulus[sta:], degree, alpha)
+polynomial = np.poly1d(coefficients[::-1])
 tm_fine = np.linspace(min(tm[sta:]), max(tm[sta:]), 500)
 max_evals_fitted = polynomial(tm_fine)
-tm_fine2 = np.linspace(max(tm[sta:]), (0.0-coefficients[1])/coefficients[0], 100); print("t2",(0.0-coefficients[1])/coefficients[0]/12+1900)
+tm_fine2 = np.linspace(max(tm[sta:]), (0.0-coefficients[0])/coefficients[1], 100); print("t2",(0.0-coefficients[0])/coefficients[1]/12+1900)
 max_evals_fitted2 = polynomial(tm_fine2)
 ax2.plot(tm_fine,max_evals_fitted,'b-',linewidth=8,alpha=0.6,label="Regression line (pessimistic)")
 ax2.plot(tm_fine2,max_evals_fitted2,'b--',linewidth=4,alpha=1.0,label="Predicted trend (pessimistic)")
@@ -167,8 +200,3 @@ ax2.set_xlabel('Time (year)')
 
 plt.legend()
 plt.savefig("results/AMOC.png")
-
-
-
-
-

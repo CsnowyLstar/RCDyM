@@ -78,6 +78,7 @@ for i in range(num):
     MFM, tm = RCDyM.get_max_floquet_dis(Tmin=1, threshold=0.85)
     inds_MFM.append(MFM)
 
+
 ################################################################
 ###  (4) Draw                                                ###
 ################################################################
@@ -94,9 +95,8 @@ ax1.legend(prop=font1)
 ax12 = ax1.twinx()
 for i in range(len(inds_MFM)):
     max_evals = inds_MFM[i]
-    #ind = max_evals[:,0]
     ind = np.sqrt(max_evals[:,0]**2 + max_evals[:,1]**2)
-    ax12.plot(tm/dt,ind,'gx',markersize=ms,label='|MFM|')
+    ax12.plot((tm/dt)[:-16], ind[:-16],'gx',markersize=ms,label='|MFM|') #
 ax12.set_ylim(0.0,1.2)
 ax12.tick_params(labelsize=ls)
 ax12.tick_params(axis='y', colors='red')
@@ -106,7 +106,7 @@ ax12.legend(prop=font1)
 ax2 = fig.add_subplot(2,1,2)
 ax2.plot(ts/dt, F_bifurcation)
 ax2.plot(6400,3.6,'r^',markersize=15)
-ax2.plot(42000,3.6,'r^',markersize=15)
+ax2.plot(38000,3.6,'r^',markersize=15)
 plt.savefig("results/logistic.png")
 
 # save
@@ -117,4 +117,5 @@ tm_pd = pd.DataFrame(tm)
 X_pd.to_csv('results/logistic_data.csv')
 ts_pd.to_csv('results/logistic_ts.csv')
 tm_pd.to_csv('results/logistic_tm.csv')
+
 

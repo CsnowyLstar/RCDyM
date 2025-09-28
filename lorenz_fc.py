@@ -1,3 +1,4 @@
+
 import numpy as np
 import random as random
 import torch
@@ -113,11 +114,8 @@ for i in range(num):
     RCDyM = RC_EWM(X, ts, window, step, args, iscontinuous, isdetrend)
     max_evals, tm = RCDyM.calculate(index)
     inds_DEJ.append(max_evals)
-    
-    
-################################################################
-###  (4) Draw                                                ###
-################################################################
+
+# Calculate ground truth
 def true_jac(s,p):
     Jx = torch.tensor([[-10,10,0],[p-s[2],-1,-1*s[0]],[s[1],s[0],-8/3]])
     return(Jx)
@@ -132,10 +130,54 @@ for i in range(len(tm)):
     mi = np.argmax(np.real(evals_predm))
     jxs[i] = evals_predm[mi].real
 
-fig = plt.figure(figsize=(20,12))
+
+
+################################################################
+###  (4) Refined low-order polynomial                        ###
+################################################################
+tp = 16000
+time = (tm-ts[0])/dt-0.5*window
+time_tp = len(time) - 1
+for ti in range(len(time)):
+    if time[ti]>tp:
+        time_tp = ti
+        break
+print(time_tp)
+
+from scipy.optimize import minimize
+
+def objective(coeffs, x, y, degree, alpha):
+    design_matrix = np.vander(x, degree+1, increasing=True)
+    y_pred = np.dot(design_matrix, coeffs)
+    data_fit = np.sum((y_pred - np.array(y)) ** 2)
+    regularization = alpha * np.sum(coeffs[1:]**2)
+    return data_fit + regularization
+
+def monotonic_polyfit_nonnegative(x_data, y_data, degree, alpha=0.1):
+    coeffs_init = np.polyfit(x_data, y_data, degree)[::-1]
+    #coeffs_init = np.ones(degree + 1) * (1e-5)
+    
+    bounds = [(None, None)]
+    bounds.extend([(0, None) for _ in range(degree)])
+
+    result = minimize(objective, coeffs_init, args=(x_data, y_data, degree, alpha), 
+                      bounds=bounds, method='SLSQP', options={'maxiter': 1000, 'ftol': 1e-8})
+    if not result.success:
+        print("warning:", result.message)
+        return coeffs_init
+
+    return result.x
+
+
+
+################################################################
+###  (5) Draw and save                                      ###
+################################################################
+
+fig = plt.figure(figsize=(30,8))
 ls = 25; ms=15
 font1 = {'weight':'normal','size':ls}
-ax1 = fig.add_subplot(2,1,1)
+ax1 = fig.add_subplot(1,1,1)
 ax1.plot(ts/dt, X[:,:], label='data', alpha=0.5)
 ax1.tick_params(labelsize=ls)
 ax1.tick_params(axis='y', colors='k')
@@ -143,41 +185,34 @@ ax1.set_ylabel(r"$s$",size=ls,color='k')
 ax1.legend(prop=font1)
 
 ax12 = ax1.twinx()
-ax12.plot(tm/dt,jxs,'ko')
-ed = -7; xs = tm[:ed]; ys = inds_DEJ[0][:ed,0]
+adv = 12
+obt = time_tp - adv
+cst = obt
+xs = tm[obt-cst:obt]; ys = inds_DEJ[0][obt-cst:obt,0]
 for i in range(len(inds_DEJ)):
     max_evals = inds_DEJ[i]
-    ax12.plot(tm[:ed]/dt,max_evals[:ed,0],'rx',markersize=ms,label='Re(DEJ)')
+    ax12.plot(tm[obt-cst:obt]/dt,max_evals[obt-cst:obt,0],'rx',markersize=ms,label='Re(DEJ)')
     if i>0:
-        xs = np.concatenate((xs,tm[:ed]),axis=0)
-        ys = np.concatenate((ys,max_evals[:ed,0]),axis=0)
+        xs = np.concatenate((xs,tm[obt-cst:obt]),axis=0)
+        ys = np.concatenate((ys,max_evals[obt-cst:obt,0]),axis=0)
 ax12.plot([-200,tpoints+200],[0,0],color='gray', linewidth=6, linestyle='--')
-coefficients = np.polyfit(xs, ys, 1)
-poly_func = np.poly1d(coefficients)
-ax12.plot([tm[0]/dt,tm[ed]/dt],[poly_func(tm[0]),poly_func(tm[ed])],'r-',linewidth=5)
+degree = 1; alpha = 0.01
+coefficients = monotonic_polyfit_nonnegative(xs, ys, degree, alpha)
+polynomial = np.poly1d(coefficients[::-1])
+tm_fine = np.linspace(min(tm[obt-cst:obt]), max(tm[obt-cst:obt]), 500)
+max_evals_fitted = polynomial(tm_fine)
+tm_extra = np.linspace(max(tm[obt-cst:obt]), (tp+400)*dt, 500)
+extrapolation_pre = polynomial(tm_extra)
+ax12.plot(tm_fine/dt, max_evals_fitted, 'b-', linewidth=15, alpha=0.8)
+ax12.plot(tm_extra/dt, extrapolation_pre, 'r-', linewidth=15, alpha=0.8)
+ax12.plot(tm[:obt]/dt,jxs[:obt],'ko')
 
 ax12.tick_params(labelsize=ls)
 ax12.tick_params(axis='y', colors='red')
 ax12.set_ylabel("RCDyM",size=ls,color='red')
 ax12.legend(prop=font1)
-ax12.set_ylim(-1.5,0.5)
-plt.savefig("results/lorenz_fc.png")
-
-sf = 5
-js = np.linspace(window+args.warm_up,ts[-1]/dt,sf) 
-for i in range(sf):
-    j = int(js[i])
-    #ax = fig.add_subplot(2,sf,i+1+sf)
-    ax = fig.add_subplot(2,sf,i+1+sf, projection='3d')
-    ax.plot(X[j-window:j,0],X[j-window:j,1],X[j-window:j,2],'k-',linewidth=2.0, \
-            label='t='+str(j)+'\n p='+str(round(F_bifurcation[j],2)))
-    #ax.set_xlim(-25,25)
-    #ax.set_ylim(-25,25)
-    ax.legend(prop=font1)
-    ax.tick_params(labelsize=ls)
-    ax.set_xlabel(r"$s_1$",size=ls)
-    if i==0:
-        ax.set_ylabel(r"$s_2$",size=ls)
+#ax12.set_ylim(-1.5,0.5)
+plt.savefig("results/lorenz_fc.pdf")
 
 # save
 X_pd = pd.DataFrame(X)
@@ -190,7 +225,3 @@ index_DEJ_pd.to_csv('results/lorenz_DEJ.csv')
 #index_MLE_pd.to_csv('results/lorenz_MLE.csv')
 ts_pd.to_csv('results/lorenz_ts.csv')
 tm_pd.to_csv('results/lorenz_tm.csv')
-
-
-
-

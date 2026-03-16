@@ -46,7 +46,7 @@ ts = data[:,0]
 X = data[:,1][:,None]
 dt = ts[-1]/(len(ts)-1)
 tpoints = len(ts)
-tp = 530
+tp = 510
 
 ################################################################
 ###  (3) Calculate the RC EWS                                ###

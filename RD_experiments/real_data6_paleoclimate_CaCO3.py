@@ -20,13 +20,13 @@ from utils.Baseline_EWS import BL_EWS
 ################################################################
 def args(): 
     parser = argparse.ArgumentParser() 
-    parser.add_argument('--n', type=int, default=50)
+    parser.add_argument('--n', type=int, default=30)
     parser.add_argument('--connectivity', type=float, default=0.05)
     parser.add_argument('--spectral_radius', type=float, default=0.1)
-    parser.add_argument('--input_scaling', type=float, default=0.1)
+    parser.add_argument('--input_scaling', type=float, default=1.0)
     parser.add_argument('--leak', type=float, default=0.0)
-    parser.add_argument('--b', type=float, default=0.0)
-    parser.add_argument('--alpha', type=float, default=0.05)
+    parser.add_argument('--b', type=float, default=0.8)
+    parser.add_argument('--alpha', type=float, default=1e-2)
     parser.add_argument('--warm_up', type=int, default=100)
     parser.add_argument('--method', type=str, default='euler') 
     args = parser.parse_args(args=[])

@@ -34,6 +34,11 @@ python -m bifurcation_fold
 python -m floquent_logistic
 ```
 
+Here, we illustrate the schematic diagram of the RCDyM framework: 
+<p align="center">
+<img align="middle" src="https://github.com/CsnowyLstar/HoGRC/blob/main/Simple_example.gif" alt="HoGRC Demo" width="650" />
+</p>
+
 ## Files
 - 'bifurcation_fold.py' is experimental code for generating fold bifurcation data and performing critical transition prediction.
 - 'bifurcation_hopf.py' is experimental code for generating Hopf bifurcation data and performing critical transition prediction.

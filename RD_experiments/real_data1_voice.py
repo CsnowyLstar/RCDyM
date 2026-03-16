@@ -1,6 +1,6 @@
 
 ################################################################
-###  (4) Refined low-order polynomial                                                                      ###
+###  (4) Refined low-order polynomial                        ###
 ################################################################
 time = (tm_dis-ts[0])/dt-0.5*window
 time_tp = len(time) - 1

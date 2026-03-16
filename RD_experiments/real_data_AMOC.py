@@ -113,7 +113,7 @@ tm = tm_ori[indices]
 
 
 ################################################################
-###  (4) Refined low-order polynomial                                                                      ###
+###  (4) Refined low-order polynomial                        ###
 ################################################################
 from scipy.optimize import minimize
 

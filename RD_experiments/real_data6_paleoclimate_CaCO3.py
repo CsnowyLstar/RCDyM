@@ -26,7 +26,7 @@ def args():
     parser.add_argument('--input_scaling', type=float, default=1.0)
     parser.add_argument('--leak', type=float, default=0.0)
     parser.add_argument('--b', type=float, default=0.8)
-    parser.add_argument('--alpha', type=float, default=1e-2)
+    parser.add_argument('--alpha', type=float, default=5*1e-2)
     parser.add_argument('--warm_up', type=int, default=100)
     parser.add_argument('--method', type=str, default='euler') 
     args = parser.parse_args(args=[])

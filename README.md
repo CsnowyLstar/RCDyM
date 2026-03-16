@@ -36,7 +36,7 @@ python -m floquent_logistic
 
 Here, we illustrate the schematic diagram of the RCDyM framework. ($A$) The basic structure of  RC consists of the input layer, the hidden layer, and the output layer. The continuous-time, autonomous RC is obtained by replacing the input with the predicted state using the learned RC. ($B$)  Three RCDyMs are depicted with the application scenarios for the tipping point prediction. ($C$) An illustrative example of tipping point prediction using the DEJ measure, one of the RCDyMs: Utilizing trend analysis for ultra-early prediction of tipping points.
 <p align="center">
-<img align="middle" src="https://github.com/CsnowyLstar/RCDyM/blob/main/RCDyM.png" alt="HoGRC Demo" width="900" />
+<img align="middle" src="https://github.com/CsnowyLstar/RCDyM/blob/main/RCDyM.png" alt="HoGRC Demo" width="850" />
 </p>
 
 ## Files

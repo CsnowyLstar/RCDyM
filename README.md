@@ -36,7 +36,7 @@ python -m floquent_logistic
 
 Here, we illustrate the schematic diagram of the RCDyM framework: 
 <p align="center">
-<img align="middle" src="https://github.com/CsnowyLstar/HoGRC/blob/main/Simple_example.gif" alt="HoGRC Demo" width="650" />
+<img align="middle" src="https://github.com/CsnowyLstar/RCDyM/blob/main/RCDyM.png" alt="HoGRC Demo" width="650" />
 </p>
 
 ## Files

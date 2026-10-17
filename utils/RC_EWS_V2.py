@@ -215,8 +215,10 @@ class RC_EWM:
                     R_b = ri[args.warm_up+j*step:args.warm_up+j*step+window,:,0] 
                     Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
                 readout.fit(R_b,Y_b)
-                Wout = readout.coef_
-                bias = readout.intercept_[:,None]
+                #Wout = readout.coef_
+                #bias = readout.intercept_[:,None]
+                Wout = np.atleast_2d(readout.coef_)
+                bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
                 
                 # Calculate the Jacobian matrix of r
                 tilde_A = RCcont.A + np.dot(RCcont.Win,Wout)
@@ -260,8 +262,10 @@ class RC_EWM:
                 R_b = ri[args.warm_up+j*step:args.warm_up+j*step+window,:,0] 
                 Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
-            Wout = readout.coef_
-            bias = readout.intercept_[:,None]
+            #Wout = readout.coef_
+            #bias = readout.intercept_[:,None]
+            Wout = np.atleast_2d(readout.coef_)
+            bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = RCcont.A + np.dot(RCcont.Win,Wout)
             tilde_B = np.dot(RCcont.Win,bias) + RCcont.b
             
@@ -320,8 +324,10 @@ class RC_EWM:
                 R_b = ri[args.warm_up+j*step:args.warm_up+j*step+window,:,0] 
                 Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
-            Wout = readout.coef_
-            bias = readout.intercept_[:,None]
+            #Wout = readout.coef_
+            #bias = readout.intercept_[:,None]
+            Wout = np.atleast_2d(readout.coef_)
+            bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = RCcont.A + np.dot(RCcont.Win,Wout)
             tilde_B = np.dot(RCcont.Win,bias) + RCcont.b
             
@@ -408,8 +414,10 @@ class RC_EWM:
                     
                 readout.fit(R_b,Y_b)
                 
-                Wout = readout.coef_
-                bias = readout.intercept_[:,None]
+                #Wout = readout.coef_
+                #bias = readout.intercept_[:,None]
+                Wout = np.atleast_2d(readout.coef_)
+                bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
                 
                 # Calculate the Jacobian matrix of r
                 tilde_A = torch.tensor(A + np.dot(Win,Wout))
@@ -454,8 +462,10 @@ class RC_EWM:
                 Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
             
-            Wout = readout.coef_
-            bias = readout.intercept_[:,None]
+            #Wout = readout.coef_
+            #bias = readout.intercept_[:,None]
+            Wout = np.atleast_2d(readout.coef_)
+            bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = A + np.dot(Win,Wout)
             tilde_B = np.dot(Win,bias) + args.b
             
@@ -511,8 +521,10 @@ class RC_EWM:
             Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
             
-            Wout = readout.coef_
-            bias = readout.intercept_[:,None]
+            #Wout = readout.coef_
+            #bias = readout.intercept_[:,None]
+            Wout = np.atleast_2d(readout.coef_)
+            bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = A + np.dot(Win,Wout)
             tilde_B = np.dot(Win,bias) + args.b
             

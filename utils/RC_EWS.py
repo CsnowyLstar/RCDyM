@@ -245,8 +245,6 @@ class RC_EWM:
                     R_b = ri[args.warm_up+j*step:args.warm_up+j*step+window,:,0] 
                     Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
                 readout.fit(R_b,Y_b)
-                #Wout = readout.coef_
-                #bias = readout.intercept_[:,None]
                 Wout = np.atleast_2d(readout.coef_)
                 bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
                 
@@ -292,8 +290,6 @@ class RC_EWM:
                 R_b = ri[args.warm_up+j*step:args.warm_up+j*step+window,:,0] 
                 Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
-            #Wout = readout.coef_
-            #bias = readout.intercept_[:,None]
             Wout = np.atleast_2d(readout.coef_)
             bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = RCcont.A + np.dot(RCcont.Win,Wout)
@@ -354,8 +350,6 @@ class RC_EWM:
                 R_b = ri[args.warm_up+j*step:args.warm_up+j*step+window,:,0] 
                 Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
-            #Wout = readout.coef_
-            #bias = readout.intercept_[:,None]
             Wout = np.atleast_2d(readout.coef_)
             bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = RCcont.A + np.dot(RCcont.Win,Wout)
@@ -448,8 +442,6 @@ class RC_EWM:
                     
                 readout.fit(R_b,Y_b)
                 
-                #Wout = readout.coef_
-                #bias = readout.intercept_[:,None]
                 Wout = np.atleast_2d(readout.coef_)
                 bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
                 
@@ -496,8 +488,6 @@ class RC_EWM:
                 Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
             
-            #Wout = readout.coef_
-            #bias = readout.intercept_[:,None]
             Wout = np.atleast_2d(readout.coef_)
             bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = A + np.dot(Win,Wout)
@@ -554,8 +544,6 @@ class RC_EWM:
             Y_b = X[args.warm_up+j*step:args.warm_up+j*step+window,:]
             readout.fit(R_b,Y_b)
             
-            #Wout = readout.coef_
-            #bias = readout.intercept_[:,None]
             Wout = np.atleast_2d(readout.coef_)
             bias = np.atleast_1d(readout.intercept_).reshape(-1, 1)
             tilde_A = A + np.dot(Win,Wout)
